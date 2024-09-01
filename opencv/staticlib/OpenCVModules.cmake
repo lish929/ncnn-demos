@@ -19,7 +19,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_cmake_targets_defined "")
 set(_cmake_targets_not_defined "")
 set(_cmake_expected_targets "")
-foreach(_cmake_expected_target IN ITEMS zlib libjpeg-turbo libwebp libopenjp2 libpng IlmImf libprotobuf opencv_core opencv_imgproc ocv.3rdparty.flatbuffers opencv_dnn opencv_imgcodecs ocv.3rdparty.dshow ocv.3rdparty.msmf ocv.3rdparty.obsensor opencv_videoio ocv.3rdparty.win32ui opencv_highgui)
+foreach(_cmake_expected_target IN ITEMS zlib opencv_core opencv_imgproc opencv_highgui opencv_photo opencv_video)
   list(APPEND _cmake_expected_targets "${_cmake_expected_target}")
   if(TARGET "${_cmake_expected_target}")
     list(APPEND _cmake_targets_defined "${_cmake_expected_target}")
@@ -49,8 +49,6 @@ unset(_cmake_expected_targets)
 # Compute the installation prefix relative to this file.
 get_filename_component(_IMPORT_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
 get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
-get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
-get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
 if(_IMPORT_PREFIX STREQUAL "/")
   set(_IMPORT_PREFIX "")
 endif()
@@ -58,117 +56,20 @@ endif()
 # Create imported target zlib
 add_library(zlib STATIC IMPORTED)
 
-# Create imported target libjpeg-turbo
-add_library(libjpeg-turbo STATIC IMPORTED)
-
-# Create imported target libwebp
-add_library(libwebp STATIC IMPORTED)
-
-# Create imported target libopenjp2
-add_library(libopenjp2 STATIC IMPORTED)
-
-set_target_properties(libopenjp2 PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "OPJ_STATIC"
-)
-
-# Create imported target libpng
-add_library(libpng STATIC IMPORTED)
-
-set_target_properties(libpng PROPERTIES
-  INTERFACE_LINK_LIBRARIES "zlib"
-)
-
-# Create imported target IlmImf
-add_library(IlmImf STATIC IMPORTED)
-
-set_target_properties(IlmImf PROPERTIES
-  INTERFACE_LINK_LIBRARIES "zlib"
-)
-
-# Create imported target libprotobuf
-add_library(libprotobuf STATIC IMPORTED)
-
 # Create imported target opencv_core
 add_library(opencv_core STATIC IMPORTED)
-
-set_target_properties(opencv_core PROPERTIES
-  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:zlib>"
-)
 
 # Create imported target opencv_imgproc
 add_library(opencv_imgproc STATIC IMPORTED)
 
-set_target_properties(opencv_imgproc PROPERTIES
-  INTERFACE_LINK_LIBRARIES "opencv_core;opencv_core"
-)
-
-# Create imported target ocv.3rdparty.flatbuffers
-add_library(ocv.3rdparty.flatbuffers INTERFACE IMPORTED)
-
-set_target_properties(ocv.3rdparty.flatbuffers PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "HAVE_FLATBUFFERS=1"
-)
-
-# Create imported target opencv_dnn
-add_library(opencv_dnn STATIC IMPORTED)
-
-set_target_properties(opencv_dnn PROPERTIES
-  INTERFACE_LINK_LIBRARIES "opencv_core;opencv_imgproc;opencv_core;opencv_imgproc;\$<LINK_ONLY:ocv.3rdparty.flatbuffers>;\$<LINK_ONLY:libprotobuf>"
-)
-
-# Create imported target opencv_imgcodecs
-add_library(opencv_imgcodecs STATIC IMPORTED)
-
-set_target_properties(opencv_imgcodecs PROPERTIES
-  INTERFACE_LINK_LIBRARIES "opencv_core;opencv_imgproc;opencv_core;opencv_imgproc;\$<LINK_ONLY:libjpeg-turbo>;\$<LINK_ONLY:libwebp>;\$<LINK_ONLY:libpng>;\$<LINK_ONLY:libopenjp2>;\$<LINK_ONLY:IlmImf>;\$<LINK_ONLY:zlib>"
-)
-
-# Create imported target ocv.3rdparty.dshow
-add_library(ocv.3rdparty.dshow INTERFACE IMPORTED)
-
-set_target_properties(ocv.3rdparty.dshow PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "HAVE_DSHOW"
-)
-
-# Create imported target ocv.3rdparty.msmf
-add_library(ocv.3rdparty.msmf INTERFACE IMPORTED)
-
-set_target_properties(ocv.3rdparty.msmf PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "HAVE_MSMF;HAVE_MSMF_DXVA"
-)
-
-# Create imported target ocv.3rdparty.obsensor
-add_library(ocv.3rdparty.obsensor INTERFACE IMPORTED)
-
-set_target_properties(ocv.3rdparty.obsensor PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "HAVE_OBSENSOR;HAVE_OBSENSOR_MSMF"
-)
-
-# Create imported target opencv_videoio
-add_library(opencv_videoio STATIC IMPORTED)
-
-set_target_properties(opencv_videoio PROPERTIES
-  INTERFACE_LINK_LIBRARIES "opencv_core;opencv_imgproc;opencv_imgcodecs;opencv_core;opencv_imgproc;opencv_imgcodecs;\$<LINK_ONLY:ocv.3rdparty.dshow>;\$<LINK_ONLY:ocv.3rdparty.msmf>;\$<LINK_ONLY:ocv.3rdparty.obsensor>"
-)
-
-# Create imported target ocv.3rdparty.win32ui
-add_library(ocv.3rdparty.win32ui INTERFACE IMPORTED)
-
-set_target_properties(ocv.3rdparty.win32ui PROPERTIES
-  INTERFACE_COMPILE_DEFINITIONS "HAVE_WIN32UI"
-  INTERFACE_LINK_LIBRARIES "user32;gdi32"
-)
-
 # Create imported target opencv_highgui
 add_library(opencv_highgui STATIC IMPORTED)
 
-set_target_properties(opencv_highgui PROPERTIES
-  INTERFACE_LINK_LIBRARIES "opencv_core;opencv_imgproc;opencv_imgcodecs;opencv_videoio;opencv_core;opencv_imgproc;opencv_imgcodecs;opencv_videoio;\$<LINK_ONLY:comctl32>;\$<LINK_ONLY:gdi32>;\$<LINK_ONLY:ole32>;\$<LINK_ONLY:setupapi>;\$<LINK_ONLY:ws2_32>;\$<LINK_ONLY:ocv.3rdparty.win32ui>"
-)
+# Create imported target opencv_photo
+add_library(opencv_photo STATIC IMPORTED)
 
-if(CMAKE_VERSION VERSION_LESS 3.0.0)
-  message(FATAL_ERROR "This file relies on consumers using CMake 3.0.0 or greater.")
-endif()
+# Create imported target opencv_video
+add_library(opencv_video STATIC IMPORTED)
 
 # Load information for each installed configuration.
 file(GLOB _cmake_config_files "${CMAKE_CURRENT_LIST_DIR}/OpenCVModules-*.cmake")
