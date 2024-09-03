@@ -1,0 +1,5 @@
+D:/yolo/ncnn-demo/ncnn-demo/out/build/x64-Release/CMakeFiles/edit_cache.dir
+D:/yolo/ncnn-demo/ncnn-demo/out/build/x64-Release/CMakeFiles/rebuild_cache.dir
+D:/yolo/ncnn-demo/ncnn-demo/out/build/x64-Release/ncnn-demo/CMakeFiles/ncnn-demo.dir
+D:/yolo/ncnn-demo/ncnn-demo/out/build/x64-Release/ncnn-demo/CMakeFiles/edit_cache.dir
+D:/yolo/ncnn-demo/ncnn-demo/out/build/x64-Release/ncnn-demo/CMakeFiles/rebuild_cache.dir
