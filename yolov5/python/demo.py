@@ -61,19 +61,20 @@ class Processor(object):
     def postprocess(self, image, mat, outputs, conf_thresh, nms_thresh, top, left, ratio):
         boxes,confs,classes = None,None,None
         for i, output in enumerate(outputs):
-            print(output.shape)
             output = 1 / (1 + np.exp(-output))
             xy, wh, conf,cls = output[:, :, 0:2], output[:, :, 2:4], output[:, :, 4],output[:, :, 5:]
             y,x = np.arange(mat.h / (8 * 2**i)),np.arange(mat.w / (8 * 2**i))
             yv,xv = np.meshgrid(y,x)
-            grids = (np.expand_dims(np.stack((xv,yv),axis=2),axis=0).repeat(3,axis=0)-0.5).reshape(len(ANCHORS[i])//2,-1,2)
+            print(yv,xv)
+            grids = (np.expand_dims(np.stack((yv,xv),axis=2),axis=0).repeat(3,axis=0)-0.5).reshape(len(ANCHORS[i])//2,-1,2)
+            print(grids.shape)
+            print(grids)
             xy = (xy * 2+grids)*8*2**i
             anchor_grids = []
             for j in range(len(ANCHORS[i])//2):
                 h,w = ANCHORS[i][j*2],ANCHORS[i][j*2+1]
                 anchor_grids.append(np.reshape(np.expand_dims(np.expand_dims(np.array([h,w]),axis=0).repeat(mat.h / (8 * 2**i),axis=0),axis=0).repeat(mat.w / (8 * 2**i),axis=0),(-1,2)))
             anchor_grids = np.array(anchor_grids)
-            print(anchor_grids.shape)
             wh = (wh*2)**2*anchor_grids
             if i == 0:
                 boxes = np.concatenate((xy.reshape(-1,xy.shape[-1]),wh.reshape(-1,wh.shape[-1])),axis=1)
@@ -83,14 +84,11 @@ class Processor(object):
                 boxes = np.concatenate((boxes,np.concatenate((xy.reshape(-1,xy.shape[-1]),wh.reshape(-1,wh.shape[-1])),axis=1)),axis=0)
                 confs = np.concatenate((confs,conf.reshape(-1)),axis=0)
                 classes = np.concatenate((classes,cls.reshape(-1,cls.shape[-1])),axis=0)
-        print(boxes)
         indexes = cv2.dnn.NMSBoxes(boxes, confs, conf_thresh, nms_thresh)
         for index in indexes:
             box = boxes[index]
             conf = confs[index]
             cls = np.argmax(classes[index])
-            print(conf)
-            print(cls)
             xc, yc, w, h = box
             x1, y1, x2, y2 = int(((xc - w / 2) - left) / ratio), int(((yc - h / 2) - top) / ratio), int(
                 ((xc + w / 2) - left) / ratio), int(((yc + h / 2) - top) / ratio)
@@ -129,10 +127,10 @@ class Detector(object):
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image_path", type=str, help="", default="../datas/zidane.jpg")
+    parser.add_argument("--image_path", type=str, help="", default="../datas/bus.jpg")
     parser.add_argument("--input_size", type=int, help="", default=640)
-    parser.add_argument("--param_path", type=str, help="", default="../models/yolov5s.ncnn.param")
-    parser.add_argument("--bin_path", type=str, help="", default="../models/yolov5s.ncnn.bin")
+    parser.add_argument("--param_path", type=str, help="", default="../models/yolov5n.ncnn.param")
+    parser.add_argument("--bin_path", type=str, help="", default="../models/yolov5n.ncnn.bin")
     parser.add_argument("--conf_thresh", type=float, help="", default=0.25)
     parser.add_argument("--nms_thresh", type=float, help="", default=0.45)
     return parser.parse_args(argv)
