@@ -2,12 +2,12 @@
 @echo off
 
 set ARC=x64
-set VS=2019
+set VS=2022
 
-set OPENCV_DIR=D:\download\opencv-mobile-4.10.0
-set BUILD_DIR=D:\download\opencv-mobile-4.10.0\build
-set INSTALL_DIR=D:\download\opencv-mobile-4.10.0\install
-set OPTIONS_PATH=D:\ncnn\opencv4_cmake_options.txt
+set OPENCV_DIR=D:\codes\opencv-mobile-4.10.0
+set BUILD_DIR=D:\codes\opencv-mobile-4.10.0\build
+set INSTALL_DIR=D:\codes\opencv-mobile-4.10.0\install
+set OPTIONS_PATH=D:\codes\opencv-mobile-4.10.0\options.txt
 
 if %ARC% == x64 (
     echo "build x64"
@@ -20,7 +20,7 @@ if %ARC% == x64 (
 if %VS% == 2019 (
     set PRE_OP=-G "Visual Studio 16 2019" -A %ARC%
 ) else (
-    set PRE_OP=-G "Visual Studio 16 2019" -A %ARC%
+    set PRE_OP=-G "Visual Studio 17 2022" -A %ARC%
 )
 
 if exist %BUILD_DIR% (
@@ -48,7 +48,7 @@ cmake %PRE_OP% ^
 -S %OPENCV_DIR% ^
 -B %BUILD_DIR%
 
-cmake --build %BUILD_DIR% --config Release -j 16
+cmake --build %BUILD_DIR% --config Release -j 8
 cmake --install %BUILD_DIR% --prefix %INSTALL_DIR%
 
 cmd.exe /k
